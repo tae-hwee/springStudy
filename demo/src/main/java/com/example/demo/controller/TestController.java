@@ -43,4 +43,14 @@ public class TestController {
 
         return response;
     }
+
+    // output으로 response entity를 반환. HTTP response body 뿐 아니라 status, header 등을 조작하기 위해 대부분의 경우는 response entity를 반환함
+    @GetMapping("/responseEntity")
+    public ResponseEntity<?> testControllerWithResponseEntity() {
+        List<String> list = new ArrayList<>();
+        list.add("Hello World! This is response entity. Your response status is 400");
+        ResponseDTO<String> response = ResponseDTO.<String>builder().data(list).build();
+
+        return ResponseEntity.badRequest().body(response);
+    }
 }
