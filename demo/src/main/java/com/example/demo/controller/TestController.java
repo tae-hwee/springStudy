@@ -33,4 +33,14 @@ public class TestController {
     public String testControllerWithRequestBody(@RequestBody TestRequestBodyDTO testRequestBodyDTO) {
         return "Hello World with request body. ID: " + testRequestBodyDTO.getId() + " and Message: " + testRequestBodyDTO.getMessage();
     }
+
+    // output으로 string 대신 ResponseDTO를 반환
+    @GetMapping("/responseBody")
+    public ResponseDTO<String> testControllerWithResponseBody() {
+        List<String> list = new ArrayList<>();
+        list.add("Hello World! This is the Response Body");
+        ResponseDTO<String> response = ResponseDTO.<String>builder().data(list).build();
+
+        return response;
+    }
 }
