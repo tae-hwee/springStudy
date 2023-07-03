@@ -7,6 +7,7 @@ import com.example.demo.model.TodoEntity;
 import com.example.demo.persistence.TodoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,6 +24,21 @@ public class TodoService {
         TodoEntity savedEntity = repository.findById(entity.getId()).get();
 
         return savedEntity.getTitle();
+    }
+
+    /**
+     * entity의 유효성을 검증하는 validate()를 따로 빼서 정의하는 refactoring
+     * create()의 경우 직접 method body를 작성했음
+     */
+    private void validate(final TodoEntity entity) {
+        if (entity == null) {
+            log.warn("Entity cannot be null.");
+            throw new RuntimeException("Entity cannot be null.");
+        }
+        if (entity.getUserId() == null) {
+            log.warn("Unknown user.");
+            throw new RuntimeException("Unknown user.");
+        }
     }
 
     public List<TodoEntity> create(final TodoEntity entity) {
@@ -45,5 +61,25 @@ public class TodoService {
 
     public List<TodoEntity> retreive(final String userId) {
         return repository.findByUserId(userId);
+    }
+
+    public List<TodoEntity> update(final TodoEntity entity) {
+        // STEP 1 입력받은 entity의 유효성 검증
+        validate(entity);
+
+        // STEP 2 넘겨받은 entity의 id를 이용해 TodoEntity를 가져옴.
+        final Optional<TodoEntity> original = repository.findById((entity.getId()));
+
+        // STEP 3 넘겨받은 TodoEntity에 새 값을 덮어줌
+        original.ifPresent(todo -> {
+            todo.setTitle(entity.getTitle());
+            todo.setDone(entity.isDone());
+
+            // STEP 4 DB에 새로 덮어 쓴 entity를 저장
+            repository.save(todo);
+        });
+
+        // STEP 5 retrieve()를 호출해 모든 TodoList를 반환
+        return retreive(entity.getUserId());
     }
 }
