@@ -82,4 +82,21 @@ public class TodoService {
         // STEP 5 retrieve()를 호출해 모든 TodoList를 반환
         return retreive(entity.getUserId());
     }
+
+    public List<TodoEntity> delete(final TodoEntity entity) {
+        validate(entity);
+
+        try {
+            // STEP 1 입력 받은 entity를 삭제
+            repository.delete(entity);
+        } catch (Exception e) {
+            // STEP 1-1 만약 exception 발생 시 id와 exception을 로깅
+            log.error("Error occurred while deleting the entity ", entity.getId(), e);
+            // STEP 1-2 exception을 controller로 전송. DB 내부 로직을 캡슐화하려면 e를 반환하지 않고 새로운 exception object를 반환
+            throw new RuntimeException("Error occurred while deleting the entity " + entity.getId());
+        }
+
+        // STEP 2 새로운 TodoList를 가져와서 리턴
+        return retreive(entity.getUserId());
+    }
 }
