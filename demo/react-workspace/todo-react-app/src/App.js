@@ -3,11 +3,17 @@ import React from "react";
 import Todo from "./Todo";
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      item: { id: 0, title: "Hello World 1", done: false },
+    };
+  }
+
   render() {
     return (
       <div className="App">
-        <Todo />
-        <Todo />
+        <Todo item={this.state.item} />
       </div>
     );
   }
