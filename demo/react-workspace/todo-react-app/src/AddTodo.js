@@ -5,6 +5,7 @@ class AddTodo extends React.Component {
   constructor(props) {
     super(props);
     this.state = { item: { title: "" } }; // 사용자의 입력을 저장할 object
+    this.add = props.add;
   }
 
   // text field에 사용자의 입력을 받을 때마다 onChange를 props로 받는 handler 함수인 onInputChange() 구현
@@ -13,6 +14,18 @@ class AddTodo extends React.Component {
     thisItem.title = e.target.value;
     this.setState({ item: thisItem });
     console.log(thisItem);
+  };
+
+  // [+] 버튼에 대한 on click event handler 함수 작성
+  onButtonClick = () => {
+    this.add(this.state.item);
+    this.setState({ item: { title: "" } });
+  };
+
+  enterKeyEventHanlder = e => {
+    if (e.key === "Enter") {
+      this.onButtonClick();
+    }
   };
 
   render() {
@@ -26,10 +39,16 @@ class AddTodo extends React.Component {
               fullWidth
               onChange={this.onInputChange}
               value={this.state.item.title}
+              onKeyPress={this.enterKeyEventHanlder}
             />
           </Grid>
           <Grid xs={1} md={1} item>
-            <Button fullWidth color="secondary" variant="outlined">
+            <Button
+              fullWidth
+              color="secondary"
+              variant="outlined"
+              onClick={this.onButtonClick}
+            >
               +
             </Button>
           </Grid>
