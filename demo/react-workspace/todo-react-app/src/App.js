@@ -8,10 +8,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      item: [
-        { id: 0, title: "Hello World 1", done: true },
-        { id: 1, title: "Hello World 2", done: false },
-      ],
+      item: [],
     };
   }
 
@@ -24,12 +21,25 @@ class App extends React.Component {
     console.log("items: ", this.state.item);
   };
 
+  delete = item => {
+    const thisItems = this.state.item;
+    const newItems = thisItems.filter(e => e.id !== item.id);
+    this.setState({ item: newItems }, () => {
+      console.log("Update Items: ", this.state.item);
+    });
+  };
+
   render() {
     var todoItems = this.state.item.length > 0 && (
       <Paper style={{ margin: 16 }}>
         <List>
           {this.state.item.map((item, idx) => (
-            <Todo item={item} key={item.id} />
+            <Todo
+              item={item}
+              key={item.id}
+              add={this.add}
+              delete={this.delete}
+            />
           ))}
         </List>
       </Paper>
